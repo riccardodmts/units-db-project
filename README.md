@@ -4,7 +4,7 @@
 
 * [Introduction](#introduction)
 * [Technologies](#technologies)
-* [Content description](#content-description)
+* [Contents description](#contents-description)
 * [Setup](#setup)
 
 ## Introduction
@@ -19,6 +19,6 @@ The project is created using:
 * Python version: 3.7.4
 
 For the specific versions of Python modules, check the section [Setup](#setup) 
-## Content description
+## Contents description
 
 ## Setup
