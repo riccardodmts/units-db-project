@@ -9,6 +9,8 @@
 
 ## Introduction
 
+The aim of this project is to develop a database for the MotoGP. Moreover, it was realised a simple Python application that allows to visualize the rank of every single Gran Prix and the statistics of a driver during the entire champinship. The GUI is created using tkinter, while the graphs are realisized with matplotlib.
+
 ## Technologies
 
 The project is created using:
