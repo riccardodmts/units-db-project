@@ -14,32 +14,33 @@ def change(lista, combo, combo2, con):
 
     for item in lista:
         
-        combo.add_option(item, command = lambda : change_second(combo, combo2, con))
+        combo.add_option(f"{item[0]} {item[1]}", command = lambda : change_second(combo, combo2, con))
 
 def change_second(combo1, combo2, con):
 
-    key = int(combo1.get_selected())
-
-    result = con._execute_pstmt("SELECT productCode FROM orderDetails WHERE orderNumber = %s", (key, ))
+    str = combo1.get_selected()
+    key1, key2 = str.split()
+    
+    result = con._execute_pstmt("SELECT nome FROM granpremio WHERE anno = %s AND categoria = %s", (key2, key1))
     combo2.remove_all()
 
     for item in result:
         
-        combo2.add_option(item[0], command = lambda : print(f"{item[0]}"))
+        combo2.add_option(item[0], command = lambda d = f"{item[0]}" : print(d))
 
 
 if __name__ == "__main__":
 
-    con = MyConnection()
+    con = MyConnection(db = "motogp_units")
 
     root = tk.Tk()
-    result = con._execute_pstmt("SELECT orderNumber FROM orders", None)
+    result = con._execute_pstmt("SELECT categoria,anno FROM campionato", None)
 
     lista = []
     
     for item in result:
 
-        lista.append(item[0])
+        lista.append(item)
 
    
     first = MyComboBox(root, ["prima", "prima 2"], root)
