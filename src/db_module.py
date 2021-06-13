@@ -51,6 +51,106 @@ class MyConnection():
         self.cnx.close()
 
 
+
+    def get_gran_prix_ranking(self, anno, cat, nome):
+
+        self.cursor.callproc('sp_get_gran_prix_ranking', args =  (anno, cat, nome))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+    def get_championship_ranking(self, anno, cat):
+
+        self.cursor.callproc('sp_get_championship_ranking', args =  (anno, cat))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+
+    def get_championship_manufacturer_ranking(self, anno, cat):
+
+        self.cursor.callproc('sp_get_championship_manufacturer_ranking', args =  (anno, cat))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+    
+    def get_drivers_list(self, anno, cat):
+
+        self.cursor.callproc('sp_get_drivers_list_from_championship', args =  (anno, cat))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+
+    def get_driver_results(self, anno, cat, nome, cognome):
+
+
+        self.cursor.callproc('sp_get_driver_results', args =  (anno, cat, nome, cognome))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+    def get_number_podiums(self, anno, cat, nome, cognome):
+
+        self.cursor.callproc('sp_get_number_podiums', args =  (anno, cat, nome, cognome))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+    def get_number_victories(self, anno, cat, nome, cognome):
+
+        self.cursor.callproc('sp_get_number_victories', args =  (anno, cat, nome, cognome))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+    
+    def get_number_na(self, anno, cat, nome, cognome):
+
+        self.cursor.callproc('sp_get_number_na', args =  (anno, cat, nome, cognome))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+
+    def get_leader(self, anno, cat):
+
+
+        self.cursor.callproc('sp_get_leader', args =  (anno, cat))
+
+        for result in self.cursor.stored_results():
+
+            res = result.fetchall()
+
+        return res
+
+
+        
+
+
 #test di connessione
 if __name__ == "__main__":
 
