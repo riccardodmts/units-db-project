@@ -42,7 +42,7 @@ def call_sp_get_leader(conn):
             print(record)
         '''
 
-        for res in conn.get_leader('2020', 'motogp'):
+        for res in conn.get_championship_ranking('2020', 'motogp'):
             
             print(res)
 
