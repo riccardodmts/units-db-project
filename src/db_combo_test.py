@@ -9,7 +9,7 @@ from db_module import MyConnection
 from combo_widget import MyComboBox
 
 def change(lista, combo, combo2, con):
-
+    call_sp_get_leader(con)
     combo.remove_all()
 
     for item in lista:
@@ -27,6 +27,13 @@ def change_second(combo1, combo2, con):
     for item in result:
         
         combo2.add_option(item[0], command = lambda d = f"{item[0]}" : print(d))
+
+def call_sp_get_leader(conn):
+
+        conn.cursor.callproc('sp_get_driver_results', args =  ('2020', 'motogp', 'Valentino', 'Rossi'))
+
+        for result in conn.cursor.stored_results():
+            print(result.fetchall())
 
 
 if __name__ == "__main__":
