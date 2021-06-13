@@ -30,10 +30,23 @@ def change_second(combo1, combo2, con):
 
 def call_sp_get_leader(conn):
 
+        '''
+
         conn.cursor.callproc('sp_get_driver_results', args =  ('2020', 'motogp', 'Valentino', 'Rossi'))
 
         for result in conn.cursor.stored_results():
-            print(result.fetchall())
+            
+            res = result.fetchall()
+        
+        for record in res:
+            print(record)
+        '''
+
+        for res in conn.get_leader('2020', 'motogp'):
+            
+            print(res)
+
+        
 
 
 if __name__ == "__main__":
