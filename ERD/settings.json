@@ -1,0 +1,45 @@
+{
+   
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "dineug.vuerd-vscode.themeSync": false,
+    "workbench.colorTheme": "Tomorrow Night Blue",
+    "dineug.vuerd-vscode.theme": {
+        "canvas": "#ffffff",
+        "table": "#003366",
+        "tableActive": "#ebb692",
+        "focus": "#ff5600",
+        "keyPK": "#B4B400",
+        "keyFK": "#b30000",
+        "keyPFK": "#60b9c4",
+        "font": "#ffffff",
+        "fontActive": "ffffff",
+        "fontPlaceholder": "#ffffff",
+        "contextmenu": "#e6e6e6",
+        "contextmenuActive": "#c7c2be",
+        "edit": "#003ef8",
+        "columnSelect": "#dcd5d0",
+        "columnActive": "#c8d6f7",
+        "minimapShadow": "#5d5d5d",
+        "scrollbarThumb": "#929292",
+        "scrollbarThumbActive": "#5d5d5d",
+        "menubar": "white",
+        "visualization": "#d7d7d7"
+    },
+    "dineug.vuerd-vscode.keymap": {
+    
+    }
+}
