@@ -25,7 +25,36 @@ For the specific versions of Python modules, check the section [Setup](#setup)
 
 A brief description of the directories and the files.
 
-* **ERD.** In this directory you may find two files: logic_d.vuerd.json, the .json file used to realise the logic diagram for the database using the VS Code extension **ERD Editor**, and the settings.json, the .json file for the settings of the VS Code extension **ERD Editor**.
-* **src.** In this directory you may find many python modules used to realized the simple application.
+* **ERD** In this directory you may find two files: logic_d.vuerd.json, the .json file used to realise the logic diagram for the database using the VS Code extension **ERD Editor**, and the settings.json, the .json file for the settings of the VS Code extension **ERD Editor**.
+*  **motogp_units.sql** In order to have some data and use the stored procedures (used in the python application), you may import this .sql file.
+*  **conda_env.txt** You may use this file to generate the same conda virtual enviroment (with the right versions of the python modules) used to realize the python application.
+* **src** In this directory you may find many python modules used to realized the simple application.
 
 ## Setup
+
+You may follow these steps:
+
+1. Import the SQL file motogp_units.sql in your MySQL server. You can use the following command (you have to create an empty database before)
+```
+mysql -u username -p database_name -R < motogp_units.sql
+```
+2. In order to create the conda virtual enviroment, use
+```
+conda create --name name_env --file conda_env.txt
+```
+3. Activate the virtual enviroment ```conda activate name_env```
+4. In the python module main_module.py (at the end of the file) you may find the following lines of code
+```Python
+if __name__ == "__main__":
+
+    con = MyConnection(db = "db_name", user = "user_name", passwd = "psw", host = "localhost")
+    root = MainPage(con)
+    
+    root.mainloop()
+
+    con.close()
+
+```
+Change ```"db_name"```, ```"psw"``` and ```"db_name"``` with the right parameters.
+
+You can start the application (```python main_module.py```).
