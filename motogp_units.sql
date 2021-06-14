@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -330,7 +330,7 @@ ON team.nome = accordo.team
 INNER JOIN iscrizione
 ON pilota.codice = iscrizione.pilota
 
-WHERE contratto.anno = '2020' AND iscrizione.anno = '2020' AND iscrizione.categoria = 'motogp'
+WHERE  contratto.anno <= anno_ch AND anno_ch <= (contratto.anno + contratto.durata - 1) AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch AND accordo.anno <= anno_ch AND anno_ch <= (accordo.anno + accordo.durata - 1)
 GROUP BY pilota.codice
 
 UNION
@@ -350,7 +350,7 @@ ON team.nome = contratto.team
 INNER JOIN iscrizione
 ON pilota.codice = iscrizione.pilota
 
-WHERE contratto.anno = '2020' AND team.tipo = 'ufficiale' AND iscrizione.anno = '2020' AND iscrizione.categoria = 'motogp'
+WHERE contratto.anno <= anno_ch AND anno_ch <= (contratto.anno + contratto.durata - 1) AND team.tipo = 'ufficiale' AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch
 
 GROUP BY pilota.codice
 
@@ -397,7 +397,7 @@ ON team.nome = accordo.team
 INNER JOIN iscrizione
 ON pilota.codice = iscrizione.pilota
 
-WHERE contratto.anno = anno_ch AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch
+WHERE contratto.anno <= anno_ch AND anno_ch <= (contratto.anno + contratto.durata - 1) AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch AND accordo.anno <= anno_ch AND anno_ch <= (accordo.anno + accordo.durata - 1)
 GROUP BY pilota.codice
 
 UNION
@@ -417,7 +417,7 @@ ON team.nome = contratto.team
 INNER JOIN iscrizione
 ON pilota.codice = iscrizione.pilota
 
-WHERE contratto.anno = anno_ch AND team.tipo = 'ufficiale' AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch
+WHERE contratto.anno <= anno_ch AND anno_ch <= (contratto.anno + contratto.durata - 1) AND team.tipo = 'ufficiale' AND iscrizione.anno = anno_ch AND iscrizione.categoria = cat_ch
 
 GROUP BY pilota.codice
 
@@ -490,50 +490,51 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_gran_prix_ranking`(IN anno_gp VARCHAR(10), IN cat_gp VARCHAR(50), IN nome_gp VARCHAR (80))
 BEGIN
-	DECLARE codice_gp INT(11);
+
+DECLARE codice_gp INT(11);
     
-    SELECT codice INTO  codice_gp FROM granPremio WHERE categoria = cat_gp AND granPremio.anno = anno_gp AND nome = nome_gp; 
+SELECT codice INTO  codice_gp FROM granPremio WHERE categoria = cat_gp AND granPremio.anno = anno_gp AND nome = nome_gp; 
     
-    SELECT posizione AS Posizione,numero AS Num , CONCAT(pilota.nome, ' ', pilota.cognome) AS Pilota, punti AS Punti,tempo AS Tempo, team.nome as Team, moto AS Moto 
-	FROM partecipazione
+SELECT posizione AS Posizione,numero AS Num , CONCAT(pilota.nome, ' ', pilota.cognome) AS Pilota, punti AS Punti,tempo AS Tempo, team.nome as Team, moto AS Moto 
+FROM partecipazione
 
-	INNER JOIN pilota 
-	ON pilota.codice = partecipazione.pilota
+INNER JOIN pilota 
+ON pilota.codice = partecipazione.pilota
 
-	INNER JOIN contratto
-	ON pilota.codice = contratto.pilota
+INNER JOIN contratto
+ON pilota.codice = contratto.pilota
 
-	INNER JOIN team
-	ON team.nome = contratto.team
+INNER JOIN team
+ON team.nome = contratto.team
 
-	INNER JOIN accordo
-	ON team.nome = accordo.team
+INNER JOIN accordo
+ON team.nome = accordo.team
 
-	INNER JOIN iscrizione
-	ON pilota.codice = iscrizione.pilota
+INNER JOIN iscrizione
+ON pilota.codice = iscrizione.pilota
 
-	WHERE contratto.anno =  anno_gp AND granPremio =  codice_gp AND iscrizione.anno = anno_gp AND iscrizione.categoria = cat_gp
+WHERE accordo.anno <= anno_gp AND anno_gp <= (accordo.anno + accordo.durata - 1) AND contratto.anno <= anno_gp AND anno_gp <= (contratto.anno + contratto.durata - 1) AND granPremio =  codice_gp AND iscrizione.anno = anno_gp AND iscrizione.categoria = cat_gp
 
-	UNION
+UNION
 
-	SELECT posizione AS Posizione,numero AS Num,CONCAT(pilota.nome, ' ', pilota.cognome) AS Pilota, punti AS Punti,tempo AS Tempo, team.nome AS Team, costruttore AS Moto
-	FROM partecipazione
+SELECT posizione AS Posizione,numero AS Num,CONCAT(pilota.nome, ' ', pilota.cognome) AS Pilota, punti AS Punti,tempo AS Tempo, team.nome AS Team, costruttore AS Moto
+FROM partecipazione
 
-	INNER JOIN pilota 
-	ON pilota.codice = partecipazione.pilota
+INNER JOIN pilota 
+ON pilota.codice = partecipazione.pilota
 
-	INNER JOIN contratto
-	ON pilota.codice = contratto.pilota
+INNER JOIN contratto
+ON pilota.codice = contratto.pilota
 
-	INNER JOIN team
-	ON team.nome = contratto.team
+INNER JOIN team
+ON team.nome = contratto.team
 
-	INNER JOIN iscrizione
-	ON pilota.codice = iscrizione.pilota
+INNER JOIN iscrizione
+ON pilota.codice = iscrizione.pilota
 
-	WHERE contratto.anno = anno_gp AND granPremio = codice_gp AND team.tipo = 'ufficiale' AND iscrizione.anno = anno_gp AND iscrizione.categoria = cat_gp
+WHERE contratto.anno <= anno_gp AND anno_gp <= (contratto.anno + contratto.durata - 1) AND granPremio = codice_gp AND team.tipo = 'ufficiale' AND iscrizione.anno = anno_gp AND iscrizione.categoria = cat_gp
 
-	ORDER BY -posizione DESC;
+ORDER BY -posizione DESC;
 
 END ;;
 DELIMITER ;
@@ -658,4 +659,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-13 12:40:30
+-- Dump completed on 2021-06-14 23:04:59
