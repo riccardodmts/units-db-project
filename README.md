@@ -25,7 +25,7 @@ For the specific versions of Python modules, check the section [Setup](#setup)
 
 A brief description of the directories and the files.
 
-* **ERD.** In this directory you may find two files: logic_d.vuerd.js, the .js file used to realise the logic diagram for the database using the VS Code extension **ERD Editor**, and the settings.js, the .js file for the settings of the VS Code extension **ERD Editor**.
+* **ERD.** In this directory you may find two files: logic_d.vuerd.json, the .json file used to realise the logic diagram for the database using the VS Code extension **ERD Editor**, and the settings.json, the .json file for the settings of the VS Code extension **ERD Editor**.
 * **src.** In this directory you may find many python modules used to realized the simple application.
 
 ## Setup
