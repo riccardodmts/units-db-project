@@ -49,7 +49,7 @@ class VerticalBar(tk.Frame):
 
             if key in kwargs:
 
-                self.settings[key] = kwargs.pop(key)
+                self.colors[key] = kwargs.pop(key)
 
 
         

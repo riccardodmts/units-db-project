@@ -4,8 +4,12 @@ import tkinter as tk
 import matplotlib as mpl
 import mysql.connector as mysql
 import datetime as dt
+from graph_widget import SwitchingFrame, MyPlot
 from combo_widget import MyComboBox
 from db_module import MyConnection
+from vertical_bar_widget import VerticalBar
+
+
 
 dark_grey = "#212121"
 dark_blue="#102A43"
@@ -152,13 +156,256 @@ class MainPage(tk.Tk):
         self.rank_popup = False
         self.rank_cost_popup = False
         self.rank_race_popup = False
+        self.stat_driver = False
 
         for item in result:
 
             self.rank_combo.add_option(f"{item[0]}", command = lambda : self.create_rank_popup())
             self.rank_costr_combo1.add_option(f"{item[0]}", command = lambda : self.create_rank_cost_popup())
             self.rank_race_combo1.add_option(f"{item[0]}", command = lambda : self.fill_race_combo2())
-            self.stat_driver_combo1.add_option(f"{item[0]}")
+            self.stat_driver_combo1.add_option(f"{item[0]}", command = lambda : self.fill_stat_combo2())
+
+    def fill_stat_combo2(self):
+
+        key1, key2 = (self.stat_driver_combo1.get_selected()).split()
+
+        res = self.conn.get_drivers_list(key2, key1)
+
+        self.stat_driver_combo2.remove_all()
+
+        for item in res:
+
+            self.stat_driver_combo2.add_option(f"{item[0]}", command = lambda : self.create_stat_driver_popup())
+
+
+    def close_stat_driver_popup(self, popup):
+
+        self.stat_driver = False
+        popup.destroy()
+
+    def order_stat_results_1(self, input):
+
+        result = []
+
+        for item in input:
+
+            temp = []
+            temp.append(item[0])
+            temp.append(item[1])
+            temp.append(item[2])
+            temp.append(item[3])
+
+            result.append(temp)
+
+        return result
+
+    def order_stat_results_2(self, input):
+
+        result = []
+
+        for item in input:
+
+            temp = []
+            temp.append(str(item[0]))
+            temp.append(item[1])
+            temp.append(item[2])
+            temp.append(item[3])
+
+            result.append(temp)
+
+        return result
+
+    def check_data(self, x_leader, y_leader, x_other, y_other):
+
+        new_y_other = None
+        new_y_leader = None
+
+        if len(x_leader) == len(x_other):
+            x = x_leader
+            return x, y_leader, y_other
+        
+        else:
+
+            if len(x_leader) > len(x_other):
+
+                new_y_other = []
+                c = 0
+                for item in x_leader:
+
+                    if item == x_other[c]:
+
+                        new_y_other.append(y_other[c])
+                        c+=1
+                    else:
+
+                        new_y_other.append(0)
+
+                return x_leader, y_leader, new_y_other
+
+
+
+
+
+
+
+    def data_for_graph(self, input):
+
+        x = []
+        y = []
+
+        for item in input:
+
+            x.append(item[0])
+            y.append(item[3])
+
+        return [x, y]
+
+
+    def create_stat_driver_popup(self):
+
+        if not self.stat_driver:
+
+            self.stat_driver = True
+
+            #data pilota
+            key1, key2 = (self.stat_driver_combo1.get_selected()).split()
+            num, nome, cognome = (self.stat_driver_combo2.get_selected()).split()
+            #------------------------------------------------
+
+
+            res = self.conn.get_driver_results(key2, key1, nome, cognome)
+            res_1 = self.order_stat_results_1(res)
+            res_2 = self.order_stat_results_2(res)
+
+            #data leader
+            leader = self.conn.get_leader(key2, key1)
+            nome_leader, cogn_leader = leader[0]
+            #----------------------------------
+            
+
+            res_leader = self.conn.get_driver_results(key2, key1, nome_leader, cogn_leader)
+            res_leader = self.order_stat_results_1(res_leader)
+
+            #print(res_leader)
+
+            x, y_leader = self.data_for_graph(res_leader)
+
+            self.stat_popup = tk.Toplevel(bg = dark_grey)
+            self.stat_popup.title("Statistiche pilota")
+            self.stat_popup.protocol("WM_DELETE_WINDOW", lambda : self.close_stat_driver_popup(self.stat_popup))
+            tabs = SwitchingFrame(self.stat_popup, bg_color = dark_grey, unselected_color = grey_1)
+            frame = tabs.get_master()
+
+            data_graph_x, data_graph_y = self.data_for_graph(res_1)
+            #print(data_graph_x, data_graph_y)
+
+            tab1 = tk.Frame(frame, bg = dark_grey)
+            tab1.grid_columnconfigure(0, weight = 3)
+            tab1.grid_columnconfigure(1, weight = 1)
+            tab1.grid_rowconfigure(0, weight = 0)
+
+            table = Table(tab1, res_2, labels = ["data", "nome gp", "posizione", "punti"])
+            table.grid(row = 0, column = 1, sticky = "nswe")
+
+            data_graph_x, y_leader, data_graph_y = self.check_data(x, y_leader, data_graph_x, data_graph_y)
+
+            graph = MyPlot(tab1, data_graph_x, [data_graph_y, y_leader], [f"{self.stat_driver_combo2.get_selected()}", f"{nome_leader} {cogn_leader}"], date = "date", bg_color = dark_blue)
+            tabs.add_tab("Grafico", tab1)
+            graph.grid(row = 0, column = 0, sticky = "nswe")
+
+
+            num_podi = ((self.conn.get_number_podiums(key2, key1, nome, cognome))[0])[0]
+            num_podi_leader = ((self.conn.get_number_podiums(key2, key1, nome_leader, cogn_leader))[0])[0]
+
+            
+            num_v = ((self.conn.get_number_victories(key2, key1, nome, cognome))[0])[0]
+            num_v_leader = ((self.conn.get_number_victories(key2, key1, nome_leader, cogn_leader))[0])[0]
+
+            num_na = ((self.conn.get_number_na(key2, key1, nome, cognome))[0])[0]
+            num_na_leader = ((self.conn.get_number_na(key2, key1, nome_leader, cogn_leader))[0])[0]
+
+            max_podi = max([num_podi, num_podi_leader])
+            if max_podi == 0:
+                max_podi = 1
+            max_v = max([num_v, num_v_leader])
+            if max_v == 0:
+                max_v = 1
+            max_na = max([num_na, num_na_leader])
+
+            if max_na == 0:
+                max_na =1
+
+
+            bar_frame = tk.Frame(frame, bg = dark_grey)
+
+            bar_frame.grid_columnconfigure(0, weight = 1)
+            bar_frame.grid_columnconfigure(1, weight = 1)
+            bar_frame.grid_columnconfigure(2, weight = 1)
+            bar_frame.grid_rowconfigure(0, weight = 0)
+            bar_frame.grid_rowconfigure(1, weight = 1)
+
+            label1 = tk.Label(bar_frame, text = "Podi", foreground = "white", bg = dark_grey)
+            label1.grid(row = 0, column = 0)
+
+            frame_bar_1 = tk.Frame(bar_frame, bg = dark_grey)
+            frame_bar_1.grid_columnconfigure(0, weight = 1)
+            frame_bar_1.grid_columnconfigure(1, weight = 1)
+            frame_bar_1.grid_rowconfigure(0, weight = 1)
+
+            bar1_1 = VerticalBar(frame_bar_1, 0, max_podi, width = 30, height = 150)
+            bar1_1.update_bar(num_podi)
+            bar1_1.grid(row = 0, column = 0)
+
+
+            bar1_2 = VerticalBar(frame_bar_1, 0, max_podi, width = 30, height = 150, bar_color = "#ff6600")
+            bar1_2.update_bar(num_podi_leader)
+            bar1_2.grid(row = 0, column = 1)
+
+            frame_bar_1.grid(row = 1, column = 0)
+
+            label2 = tk.Label(bar_frame, text = "Vittorie", foreground = "white", bg = dark_grey)
+            label2.grid(row = 0, column = 1)
+
+            frame_bar_2 = tk.Frame(bar_frame, bg = dark_grey)
+            frame_bar_2.grid_columnconfigure(0, weight = 1)
+            frame_bar_2.grid_columnconfigure(1, weight = 1)
+            frame_bar_2.grid_rowconfigure(0, weight = 1)
+
+            bar2_1 = VerticalBar(frame_bar_2, 0, max_v, width = 30, height = 150)
+            bar2_1.update_bar(num_v)
+            bar2_1.grid(row = 0, column = 0)
+
+            
+
+            bar2_2 = VerticalBar(frame_bar_2, 0, max_v, width = 30, height = 150, bar_color = "#ff6600")
+            bar2_2.update_bar(num_v_leader)
+            bar2_2.grid(row = 0, column = 1)
+
+            frame_bar_2.grid(row = 1, column = 1)
+
+            label3 = tk.Label(bar_frame, text = "NA", foreground = "white", bg = dark_grey)
+            label3.grid(row = 0, column = 2)
+
+            frame_bar_3 = tk.Frame(bar_frame, bg = dark_grey)
+            frame_bar_3.grid_columnconfigure(0, weight = 1)
+            frame_bar_3.grid_columnconfigure(1, weight = 1)
+            frame_bar_3.grid_rowconfigure(0, weight = 1)
+
+            bar3_1 = VerticalBar(frame_bar_3, 0, max_na, width = 30, height = 150)
+            bar3_1.update_bar(num_na)
+            bar3_1.grid(row = 0, column = 0)
+
+
+            bar3_2 = VerticalBar(frame_bar_3, 0, max_na, width = 30, height = 150, bar_color = "#ff6600")
+            bar3_2.update_bar(num_na_leader)
+            bar3_2.grid(row = 0, column = 1)
+
+            frame_bar_3.grid(row = 1, column = 2)
+            tabs.add_tab("Altre stat", bar_frame)
+
+            
+            tabs.pack(fill = tk.BOTH, expand = True)
+
 
 
     def fill_race_combo2(self):
