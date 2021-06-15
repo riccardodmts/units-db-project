@@ -12,7 +12,7 @@ class MyConnection():
 
             "user" : "root",
             "host" : "localhost",
-            "passwd" : "Aprilia21units",
+            "passwd" : "...",
             "db" : "classicmodels"
 
         }
