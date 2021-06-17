@@ -208,7 +208,12 @@ class MainPage(tk.Tk):
             temp = []
             temp.append(str(item[0]))
             temp.append(item[1])
-            temp.append(item[2])
+
+            if item[2] is None:
+                temp.append("NA")
+            else:
+                temp.append(item[2])
+                    
             temp.append(item[3])
 
             result.append(temp)
@@ -304,7 +309,7 @@ class MainPage(tk.Tk):
             tab1.grid_columnconfigure(1, weight = 1)
             tab1.grid_rowconfigure(0, weight = 0)
 
-            table = Table(tab1, res_2, labels = ["data", "nome gp", "posizione", "punti"])
+            table = Table(tab1, res_2, labels = ["Data", "Nome GP", "Posizione", "Punti"])
             table.grid(row = 0, column = 1, sticky = "nswe")
 
             data_graph_x, y_leader, data_graph_y = self.check_data(x, y_leader, data_graph_x, data_graph_y)
@@ -457,7 +462,7 @@ class MainPage(tk.Tk):
 
             temp = []
             if item[0] is None:
-                temp.append("-")
+                temp.append("NA")
             else:
                 temp.append(item[0])
 
@@ -571,7 +576,7 @@ class MainPage(tk.Tk):
 
 if __name__ == "__main__":
 
-    con = MyConnection(db = "motogp_units")
+    con = MyConnection(db = "motogp_units", user =  "root", passwd = "psw", host = "localhost")
     root = MainPage(con)
     
     root.mainloop()
