@@ -55,6 +55,6 @@ if __name__ == "__main__":
     con.close()
 
 ```
-Change ```"db_name"```, ```"psw"``` and ```"db_name"``` with the right parameters.
+Change ```"db_name"```, ```"user_name"``` and ```"psw"``` with the right parameters.
 
 You can start the application (```python main_module.py```).
