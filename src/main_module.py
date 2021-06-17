@@ -296,7 +296,7 @@ class MainPage(tk.Tk):
             x, y_leader = self.data_for_graph(res_leader)
 
             self.stat_popup = tk.Toplevel(bg = dark_grey)
-            self.stat_popup.title("Statistiche pilota")
+            self.stat_popup.title(f"Statistiche pilota: {self.stat_driver_combo2.get_selected()}")
             self.stat_popup.protocol("WM_DELETE_WINDOW", lambda : self.close_stat_driver_popup(self.stat_popup))
             tabs = SwitchingFrame(self.stat_popup, bg_color = dark_grey, unselected_color = grey_1)
             frame = tabs.get_master()
@@ -521,7 +521,7 @@ class MainPage(tk.Tk):
 
             self.ch_popup = tk.Toplevel(bg = dark_grey)
             
-            self.ch_popup.title("Classifica campionato")
+            self.ch_popup.title(f"Classifica campionato: {input}")
 
             self.ch_popup.protocol("WM_DELETE_WINDOW", lambda : self.close_ch_popup(self.ch_popup))
             #print(res)
@@ -564,7 +564,7 @@ class MainPage(tk.Tk):
 
             self.ch_cost_popup = tk.Toplevel(bg = dark_grey)
 
-            self.ch_cost_popup.title("Classifica costruttori")
+            self.ch_cost_popup.title(f"Classifica costruttori. Campionato: {self.rank_costr_combo1.get_selected()}")
             self.ch_cost_popup.protocol("WM_DELETE_WINDOW", lambda : self.close_ch_cost_popup(self.ch_cost_popup))
 
 

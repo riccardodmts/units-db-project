@@ -6,7 +6,7 @@ import numpy as np
 
 class MyConnection():
 
-    def __init__(self, * args, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         self.settings = {
 
