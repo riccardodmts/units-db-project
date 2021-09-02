@@ -576,7 +576,7 @@ class MainPage(tk.Tk):
 
 if __name__ == "__main__":
 
-    con = MyConnection(db = "motogp_units", user =  "root", passwd = "psw", host = "localhost")
+    con = MyConnection(db = "motogp_units", user =  "root", passwd = "Aprilia21units", host = "localhost")
     root = MainPage(con)
     
     root.mainloop()
